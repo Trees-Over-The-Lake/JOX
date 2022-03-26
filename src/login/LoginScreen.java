@@ -7,63 +7,127 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-public class LoginScreen implements ActionListener {
+public class LoginScreen{
 
-	private JFrame     frame;
-	private JPanel     panel;
-	private JLabel     ipLabel;
-	private JTextField ipTextField;
-	private JLabel     portLabel;
-	private JTextField portTextField;
-	private JButton    button;
+	private JFrame      frame;
+	private JTabbedPane tabbedPanel;
+	
+	private JPanel     clientPanel;
+	private JTextField clientIpTextField;
+	private JTextField clientPortTextField;
+	private JButton    loginClientButton;
+	
+	private JPanel     serverPanel;
+	private JTextField serverPortTextField;
+	private JButton    createServerButton;
 	
 	public LoginScreen(String frameName) {
-		this.panel = new JPanel();
-		this.frame = new JFrame();
 		
-		frame.setTitle(frameName);
-		frame.setSize(350,200);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+		this.frame       = new JFrame();
 		
-		this.frame.add(panel);
+		this.tabbedPanel = new JTabbedPane();
+		this.frame.add(tabbedPanel);
 		
-		this.panel.setLayout(null);
-		this.ipLabel = new JLabel("IP");
-		this.ipLabel.setBounds(10,20,80,25);
-		this.ipLabel.setVisible(true);
-		this.panel.add(ipLabel);
+		this.initFrame(frameName);
+		this.initClientTab();
+		this.initServerTab();
 		
-		this.ipTextField = new JTextField(20);
-		this.ipTextField.setBounds(100,20,165,25);
-		this.ipTextField.setVisible(true);
-		this.panel.add(ipTextField);
-		
-		this.portLabel = new JLabel("Port");
-		this.portLabel.setBounds(10,50,80,25);
-		this.portLabel.setVisible(true);
-		this.panel.add(portLabel);
-		
-		this.portTextField = new JTextField();
-		this.portTextField.setBounds(100,50,165,25);
-		this.portTextField.setVisible(true);
-		this.panel.add(portTextField);
-		
-		this.button = new JButton();
-		this.button.setText("Login");
-		this.button.setBounds(10,80,80,25);
-		this.button.addActionListener(this);
-		this.button.setVisible(true);
-		this.panel.add(button);
+		this.tabbedPanel.add("Cliente",this.clientPanel);
+		this.tabbedPanel.add("Servidor",this.serverPanel);
 		
 		this.frame.setVisible(true);
 	}
 	
-	public void actionPerformed(ActionEvent action) {
-		String ip   = this.ipTextField.getText();
-		String port = this.portTextField.getText();
+	public void initFrame(String frameName) {
+		this.frame.setTitle(frameName);
+		this.frame.setSize(350,200);
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setResizable(false);
+		this.frame.setLocationRelativeTo(null);
+	}
+	
+	public void initClientTab() {
+		
+		JLabel ipLabel;
+		JLabel portLabel;
+		
+		this.clientPanel = new JPanel();
+		this.clientPanel.setLayout(null);
+		
+		ipLabel = new JLabel("IP");
+		ipLabel.setBounds(10,20,80,25);
+		ipLabel.setVisible(true);
+		this.clientPanel.add(ipLabel);
+		
+		this.clientIpTextField = new JTextField(20);
+		this.clientIpTextField.setBounds(100,20,165,25);
+		this.clientIpTextField.setVisible(true);
+		this.clientPanel.add(this.clientIpTextField);
+		
+		portLabel = new JLabel("Port");
+		portLabel.setBounds(10,50,80,25);
+		portLabel.setVisible(true);
+		this.clientPanel.add(portLabel);
+		
+		this.clientPortTextField = new JTextField();
+		this.clientPortTextField.setBounds(100,50,165,25);
+		this.clientPortTextField.setVisible(true);
+		this.clientPanel.add(this.clientPortTextField);
+		
+		this.loginClientButton = new JButton();
+		this.loginClientButton.setText("Login");
+		this.loginClientButton.setBounds(10,80,80,25);
+		this.loginClientButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent a) {
+				loginServer();
+			}
+		});
+		this.loginClientButton.setVisible(true);
+		this.clientPanel.add(this.loginClientButton);
+	}
+	
+	public void initServerTab() {
+		
+		JLabel portLabel;
+		
+		this.serverPanel = new JPanel();
+		this.serverPanel.setLayout(null);
+		
+		this.serverPortTextField = new JTextField(20);
+		this.serverPortTextField.setBounds(100,20,165,25);
+		this.serverPortTextField.setVisible(true);
+		this.serverPanel.add(this.serverPortTextField);
+		
+		portLabel = new JLabel("Port");
+		portLabel.setBounds(10,20,80,25);
+		portLabel.setVisible(true);
+		this.serverPanel.add(portLabel);
+		
+		this.createServerButton = new JButton();
+		this.createServerButton.setText("Create server");
+		this.createServerButton.setBounds(10,80,125,25);
+		this.createServerButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent a) {
+				createServer();
+			}
+		});
+		this.createServerButton.setVisible(true);
+		this.serverPanel.add(this.createServerButton);
+		
+	}
+	
+	public void createServer() {
+		System.out.println("createServerButton");
+	}
+	
+	public void loginServer() {
+		System.out.println("loginServer");
+		
+		String ip   = this.clientIpTextField.getText();
+		String port = this.clientPortTextField.getText();
 		
 		System.out.println(ip);
 		System.out.println(port);
