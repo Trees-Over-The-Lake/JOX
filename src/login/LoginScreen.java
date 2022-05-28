@@ -10,8 +10,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
+import observer.EventManager;
+
+import java.util.HashMap;
+
 public class LoginScreen{
 
+	public EventManager events;
+	
+	static final String OPERATION_KEY = "operation";
+	static final String IP_KEY        = "ip";
+	static final String PORT_KEY      = "port";
+	
 	private JFrame      frame;
 	private JTabbedPane tabbedPanel;
 	
@@ -25,6 +35,8 @@ public class LoginScreen{
 	private JButton    createServerButton;
 	
 	public LoginScreen(String frameName) {
+		
+		this.events = new EventManager("create_server", "login_server");
 		
 		this.frame       = new JFrame();
 		
@@ -41,7 +53,12 @@ public class LoginScreen{
 		this.frame.setVisible(true);
 	}
 	
+	/**
+	 * Initiate the JFrame, by setting its parameters
+	 * @param frameName its the name of the window
+	 */
 	public void initFrame(String frameName) {
+		
 		this.frame.setTitle(frameName);
 		this.frame.setSize(350,200);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,6 +66,9 @@ public class LoginScreen{
 		this.frame.setLocationRelativeTo(null);
 	}
 	
+	/**
+	 * Initiate the client side tab
+	 */
 	public void initClientTab() {
 		
 		JLabel ipLabel;
@@ -82,13 +102,26 @@ public class LoginScreen{
 		this.loginClientButton.setBounds(10,80,80,25);
 		this.loginClientButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
-				loginServer();
+				
+				/**
+				 * Start game as client side
+				 */
+				HashMap<String,String> data=new HashMap<String,String>();
+				data.put(OPERATION_KEY, Operation.LOGIN.name());
+				data.put(IP_KEY, clientIpTextField.getText());
+				data.put(PORT_KEY, clientPortTextField.getText());
+				
+				events.notify("login_server", data);
+				
 			}
 		});
 		this.loginClientButton.setVisible(true);
 		this.clientPanel.add(this.loginClientButton);
 	}
 	
+	/**
+	 * Initiate the client side tab
+	 */
 	public void initServerTab() {
 		
 		JLabel portLabel;
@@ -111,25 +144,20 @@ public class LoginScreen{
 		this.createServerButton.setBounds(10,80,125,25);
 		this.createServerButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
-				createServer();
+				
+				/**
+				 * Start game as server side
+				 */
+				HashMap<String,String> data=new HashMap<String,String>();
+				data.put(OPERATION_KEY, Operation.CREATE_SERVER.name());
+				data.put(IP_KEY, clientIpTextField.getText());
+				data.put(PORT_KEY, clientPortTextField.getText());
+				
+				events.notify("create_server", data);
 			}
 		});
 		this.createServerButton.setVisible(true);
 		this.serverPanel.add(this.createServerButton);
 		
-	}
-	
-	public void createServer() {
-		System.out.println("createServerButton");
-	}
-	
-	public void loginServer() {
-		System.out.println("loginServer");
-		
-		String ip   = this.clientIpTextField.getText();
-		String port = this.clientPortTextField.getText();
-		
-		System.out.println(ip);
-		System.out.println(port);
 	}
 }

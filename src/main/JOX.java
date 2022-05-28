@@ -1,10 +1,25 @@
 package main;
 
-import login.LoginScreen;
+import java.util.HashMap;
 
-public class JOX {
+import login.LoginScreen;
+public class JOX  {
+	
+	public JOX() {
+		LoginScreen login = new LoginScreen("JOX");
+		login.events.connect("create_server", this);
+		login.events.connect("login_server", this);
+	}
 	
 	public static void main(String[] args) {
-		LoginScreen login = new LoginScreen("JOX");
+		JOX j = new JOX();
+	}
+	
+	public void create_server(HashMap<String, String> content) {
+		// TODO: Creating server logic
+	}
+	
+	public void login_server(HashMap<String, String> content) {
+		// TODO: Logging into server logic
 	}
 }
