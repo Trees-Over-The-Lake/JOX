@@ -10,18 +10,21 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import observer.EventManager;
+import observer.Signal;
 
 import java.util.HashMap;
 
 public class LoginScreen{
 
-	public EventManager events;
-	
-	static final String OPERATION_KEY = "operation";
+	// Map keys
 	static final String IP_KEY        = "ip";
 	static final String PORT_KEY      = "port";
 	
+	// Login signals
+	public Signal create_server;
+	public Signal login_server;
+	
+	// Java Swing components
 	private JFrame      frame;
 	private JTabbedPane tabbedPanel;
 	
@@ -36,7 +39,8 @@ public class LoginScreen{
 	
 	public LoginScreen(String frameName) {
 		
-		this.events = new EventManager("create_server", "login_server");
+		this.create_server = new Signal(HashMap.class);
+		this.login_server  = new Signal(HashMap.class);
 		
 		this.frame       = new JFrame();
 		
@@ -107,11 +111,10 @@ public class LoginScreen{
 				 * Start game as client side
 				 */
 				HashMap<String,String> data=new HashMap<String,String>();
-				data.put(OPERATION_KEY, Operation.LOGIN.name());
 				data.put(IP_KEY, clientIpTextField.getText());
 				data.put(PORT_KEY, clientPortTextField.getText());
 				
-				events.notify("login_server", data);
+				login_server.emit_signal(data);
 				
 			}
 		});
@@ -149,11 +152,10 @@ public class LoginScreen{
 				 * Start game as server side
 				 */
 				HashMap<String,String> data=new HashMap<String,String>();
-				data.put(OPERATION_KEY, Operation.CREATE_SERVER.name());
 				data.put(IP_KEY, clientIpTextField.getText());
 				data.put(PORT_KEY, clientPortTextField.getText());
 				
-				events.notify("create_server", data);
+				create_server.emit_signal(data);
 			}
 		});
 		this.createServerButton.setVisible(true);
