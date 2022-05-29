@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import login.LoginScreen;
+import tic_tac_toe.MainGameLoop;
 public class JOX  {
 	
+	LoginScreen login;
+	
 	public JOX() {
-		LoginScreen login = new LoginScreen("JOX");
+		login = new LoginScreen("JOX");
 		login.create_server.connect(this,"create_server");
 		login.login_server.connect(this,"login_server");
 	}
@@ -22,6 +25,7 @@ public class JOX  {
 			System.out.println(entry.getKey());
 			System.out.println(entry.getValue());
 		}
+		login.close();
 		// TODO: Creating server logic
 	}
 	
@@ -31,6 +35,8 @@ public class JOX  {
 			System.out.println(entry.getKey());
 			System.out.println(entry.getValue());
 		}
+		login.close();
+		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
 		// TODO: Logging into server logic
 	}
 }

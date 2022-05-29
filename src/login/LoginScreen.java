@@ -14,8 +14,10 @@ import observer.Signal;
 
 import java.util.HashMap;
 
-public class LoginScreen{
+public class LoginScreen extends JFrame{
 
+	private static final long serialVersionUID = 1L;
+	
 	// Map keys
 	static final String IP_KEY        = "ip";
 	static final String PORT_KEY      = "port";
@@ -25,7 +27,6 @@ public class LoginScreen{
 	public Signal login_server;
 	
 	// Java Swing components
-	private JFrame      frame;
 	private JTabbedPane tabbedPanel;
 	
 	private JPanel     clientPanel;
@@ -42,10 +43,8 @@ public class LoginScreen{
 		this.create_server = new Signal(HashMap.class);
 		this.login_server  = new Signal(HashMap.class);
 		
-		this.frame       = new JFrame();
-		
 		this.tabbedPanel = new JTabbedPane();
-		this.frame.add(tabbedPanel);
+		this.add(tabbedPanel);
 		
 		this.initFrame(frameName);
 		this.initClientTab();
@@ -54,7 +53,7 @@ public class LoginScreen{
 		this.tabbedPanel.add("Cliente",this.clientPanel);
 		this.tabbedPanel.add("Servidor",this.serverPanel);
 		
-		this.frame.setVisible(true);
+		this.setVisible(true);
 	}
 	
 	/**
@@ -63,11 +62,11 @@ public class LoginScreen{
 	 */
 	public void initFrame(String frameName) {
 		
-		this.frame.setTitle(frameName);
-		this.frame.setSize(350,200);
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.frame.setResizable(false);
-		this.frame.setLocationRelativeTo(null);
+		this.setTitle(frameName);
+		this.setSize(350,200);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
+		this.setLocationRelativeTo(null);
 	}
 	
 	/**
@@ -161,5 +160,10 @@ public class LoginScreen{
 		this.createServerButton.setVisible(true);
 		this.serverPanel.add(this.createServerButton);
 		
+	}
+	
+	public void close() {
+		this.setVisible(false);
+		this.dispose();
 	}
 }
