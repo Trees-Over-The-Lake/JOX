@@ -7,15 +7,28 @@ import java.awt.Graphics2D;
 
 public class Circle extends Entity{
 
-	public Circle(int x,int y, int width, int height) {
-		super(x, y, width, height);
-		// TODO Auto-generated constructor stub
+	private final static int DEFAULT_RADIUS = 150;
+	private final static int DEFAULT_STROKE = 10;
+	
+	Color color;
+	int stroke_size;
+
+	public Circle(int x, int y, Color color) {
+		super(x, y, DEFAULT_RADIUS, DEFAULT_RADIUS);
+		this.stroke_size = DEFAULT_STROKE; 
+		this.color       = color;
+	}
+	
+	public Circle(int x,int y, int width, Color color) {
+		super(x, y, width, width);
+		this.stroke_size = DEFAULT_STROKE; 
+		this.color = color;
 	}
 	
 	public void render(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(10));
-		g2.setColor(Color.red);
-		g2.drawOval(100, 100, width, height);
+        g2.setStroke(new BasicStroke(stroke_size));
+		g2.setColor(color);
+		g2.drawOval(x, y, width, height);
 	}
 }

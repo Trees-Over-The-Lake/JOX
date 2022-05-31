@@ -15,14 +15,14 @@ import java.lang.reflect.Method;
  */
 public class Signal {
     Map<Object, List<String>> listeners = new HashMap<>();
-    Class<?>[] parameters;
+    Class<?>[] paramTypes;
 
     /**
      * Create a signal that can receive a number of parameters
      * @param parameters is the list of parameters this signal can receive
      */
-    public Signal(Class<?>... parameters) {
-    	this.parameters = parameters;
+    public Signal(Class<?>... paramTypes) {
+    	this.paramTypes = paramTypes;
     }
 
     /**
@@ -66,7 +66,6 @@ public class Signal {
         	
         	for ( String functionName : classFunctionNames ) {
         		try {
-            		Class<?>[] paramTypes = {HashMap.class};
     				Method methodToBeCalled = classInstance.getClass().getMethod(functionName, paramTypes);
     				methodToBeCalled.invoke(classInstance, parameters);
     			} catch (NoSuchMethodException e) { 
