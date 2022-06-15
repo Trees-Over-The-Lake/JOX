@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import login.LoginScreen;
+import network.Network;
 import tic_tac_toe.MainGameLoop;
-public class JOX  {
+public final class JOX  {
 	
 	LoginScreen login;
 	
@@ -21,12 +22,12 @@ public class JOX  {
 	
 	public void create_server(HashMap<String, String> content) {
 		System.out.println("create_server");
-		for(Map.Entry<String,String> entry : content.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
-		}
 		login.close();
-		// TODO: Creating server logic
+		Network server = new Network();
+		System.out.println(content.get(LoginScreen.PORT_KEY));
+		server.initializeServer(Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+		
+		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
 	}
 	
 	public void login_server(HashMap<String, String> content) {
@@ -36,6 +37,9 @@ public class JOX  {
 			System.out.println(entry.getValue());
 		}
 		login.close();
+		Network client = new Network();
+		client.connect(content.get(LoginScreen.IP_KEY), Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+		
 		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
 		// TODO: Logging into server logic
 	}

@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class Cross extends Entity{
+import tic_tac_toe.PlayerType;
+
+public class Cross extends Player{
 
 	private final static int DEFAULT_RADIUS = 150;
 	private final static int DEFAULT_STROKE = 10;
@@ -17,6 +19,7 @@ public class Cross extends Entity{
 		super(x, y, DEFAULT_RADIUS, DEFAULT_RADIUS);
 		this.stroke_size = DEFAULT_STROKE;
 		this.color = color;
+		playerEnum = PlayerType.Cross;
 	}
 	
 	public Cross(int x,int y, int width, Color color) {

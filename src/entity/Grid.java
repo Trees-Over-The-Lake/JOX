@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import tic_tac_toe.Player;
+import tic_tac_toe.PlayerType;
 
 public class Grid extends Entity{
 	
@@ -19,18 +19,31 @@ public class Grid extends Entity{
 	int square_size = 10;
 	int stroke;
 	
-	Entity board[];
+	Player board[];
 
 	Color board_color = Color.red;
+	
+	public PlayerType winner = PlayerType.None;
+	
+	private int marked_squares = 0;
+	
+	private static final int[][] WINS = new int[][] { { 0, 1, 2 }, 
+													{ 3, 4, 5 },
+													{ 6, 7, 8 }, 
+													{ 0, 3, 6 }, 
+													{ 1, 4, 7 }, 
+													{ 2, 5, 8 }, 
+													{ 0, 4, 8 }, 
+													{ 2, 4, 6 } };
 	
 	public Grid(int x,int y, int width) {
 		super(x, y, width, width);
 		this.stroke      = DEFAULT_STROKE;
 		this.square_size = width / GRID_SIZE - stroke;
-		this.board = new Entity[GRID_SIZE * GRID_SIZE];
+		this.board = new Player[GRID_SIZE * GRID_SIZE];
 	}
 	
-	public boolean mark_board(Player currPlayer, int x,int y) {
+	public boolean mark_board(PlayerType currPlayer, int x,int y) {
 		
 		boolean board_marked = false;
 		
@@ -48,10 +61,17 @@ public class Grid extends Entity{
 		int player_x = calculate_board_position(this.x,x_index);
 		int player_y = calculate_board_position(this.y,y_index);
 		
-		if ( currPlayer == Player.Circle )
+		if ( currPlayer == PlayerType.Circle )
 			this.board[x_index + (y_index * GRID_SIZE)] = new Circle(player_x, player_y, DEFAULT_SERVER_COLOR);
 		else
 			this.board[x_index + (y_index * GRID_SIZE)] = new Cross(player_x, player_y, DEFAULT_CLIENT_COLOR);
+		
+		marked_squares++;
+		
+		winner = check_for_board_winner(PlayerType.Circle);
+		
+		if (winner == PlayerType.None)
+			winner = check_for_board_winner(PlayerType.Cross);
 		
 		return board_marked;
 	}
@@ -69,10 +89,34 @@ public class Grid extends Entity{
 		return index;
 	}
 	
+	private PlayerType check_for_board_winner(PlayerType currPlayer) {
+		
+		for (int[] position : WINS) {
+			
+			if (board[position[0]] == null ||
+				board[position[1]] == null || 
+				board[position[2]] == null) {
+				continue;
+			}
+			
+			if (board[position[0]].playerEnum == currPlayer &&
+				board[position[1]].playerEnum == currPlayer &&
+				board[position[2]].playerEnum == currPlayer) {
+				return currPlayer;
+			}
+		}
+		
+		return PlayerType.None;
+	}
+	
 	private int calculate_board_position(int axis, int axis_index) {
 		return axis + (axis_index*stroke + axis_index*square_size);
 	}
 	
+	public boolean game_ended_with_tie() {
+		return winner == PlayerType.None && marked_squares == GRID_SIZE * GRID_SIZE;
+	}
+
 	public void render(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         

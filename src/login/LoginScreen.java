@@ -19,8 +19,8 @@ public class LoginScreen extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
 	// Map keys
-	static final String IP_KEY        = "ip";
-	static final String PORT_KEY      = "port";
+	public static final String IP_KEY        = "ip";
+	public static final String PORT_KEY      = "port";
 	
 	// Login signals
 	public Signal create_server;
@@ -151,8 +151,7 @@ public class LoginScreen extends JFrame{
 				 * Start game as server side
 				 */
 				HashMap<String,String> data=new HashMap<String,String>();
-				data.put(IP_KEY, clientIpTextField.getText());
-				data.put(PORT_KEY, clientPortTextField.getText());
+				data.put(PORT_KEY, serverPortTextField.getText());
 				
 				create_server.emit_signal(data);
 			}
