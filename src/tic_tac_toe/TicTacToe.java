@@ -74,7 +74,9 @@ public class TicTacToe {
 		} 
 		
 		if (Network.currentConnection == ConnectionType.Server) {
-			connection.listenForServerRequest();
+			
+			if(!Network.accepted)
+				connection.listenForServerRequest();
 			
 			String response = connection.receiveData();
 			

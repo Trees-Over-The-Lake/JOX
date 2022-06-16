@@ -39,7 +39,7 @@ public class Network {
 	public void initializeServer(int port) {
 		try {
 			serverSocket = new ServerSocket(port);
-			System.out.println("server created with port " + port + " and Ip " + InetAddress.getByName("::1"));
+			System.out.println("server created with port " + port);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,6 @@ public class Network {
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
 			accepted = true;
-	        System.out.println("FROM SERVER: " + response);
 			System.out.println("CLIENT HAS REQUESTED TO JOIN, AND WE HAVE ACCEPTED");
 		} catch (IOException e) {
 			e.printStackTrace();
