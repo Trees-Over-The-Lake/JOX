@@ -20,6 +20,8 @@ public class Network {
 	
 	public boolean connect(String ip, int port) {
 		try {
+			System.out.println("ip: " + ip);
+			System.out.println("port: " + port);
 			socket = new Socket(ip, port);
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
@@ -35,7 +37,7 @@ public class Network {
 	
 	public void initializeServer(int port) {
 		try {
-			serverSocket = new ServerSocket(port, 8, InetAddress.getByName("::1"));
+			serverSocket = new ServerSocket(port);
 			System.out.println("server created with port " + port + " and Ip " + InetAddress.getByName("::1"));
 		} catch (Exception e) {
 			e.printStackTrace();

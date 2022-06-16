@@ -32,10 +32,6 @@ public final class JOX  {
 	
 	public void login_server(HashMap<String, String> content) {
 		System.out.println("login_server");
-		for(Map.Entry<String,String> entry : content.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
-		}
 		login.close();
 		Network client = new Network();
 		client.connect(content.get(LoginScreen.IP_KEY), Integer.parseInt(content.get(LoginScreen.PORT_KEY)));

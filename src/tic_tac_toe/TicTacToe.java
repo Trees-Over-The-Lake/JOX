@@ -87,7 +87,7 @@ public class TicTacToe {
 		g.setFont(labelFont);
 		metrics = g.getFontMetrics(labelFont);
 		int x = (MainGameLoop.get_width() * MainGameLoop.get_scale() - metrics.stringWidth(label)) / 2;
-	    int y = (int)(((MainGameLoop.get_height()- metrics.getHeight())) * 0.05 + metrics.getAscent());
+	    int y = (int)((MainGameLoop.get_height()- metrics.getHeight()) * 0.05 + metrics.getAscent());
 		g.drawString(label,x, y);
 	}
 }
