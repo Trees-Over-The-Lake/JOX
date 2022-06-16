@@ -1,8 +1,10 @@
 package network;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.InetAddress;
@@ -20,8 +22,6 @@ public class Network {
 	
 	public boolean connect(String ip, int port) {
 		try {
-			System.out.println("ip: " + ip);
-			System.out.println("port: " + port);
 			socket = new Socket(ip, port);
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
@@ -46,15 +46,30 @@ public class Network {
 		currentConnection = ConnectionType.Server;
 	}
 	
-	public void listenForServerRequest() {
+	public String listenForServerRequest() {
 		Socket socket = null;
+		String response = null;
 		try {
 			socket = serverSocket.accept();
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
 			accepted = true;
+	        BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	        response = entrada.readLine();
+	        System.out.println("FROM SERVER: " + entrada.readLine());
 			System.out.println("CLIENT HAS REQUESTED TO JOIN, AND WE HAVE ACCEPTED");
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	public void sendData(String data) {
+		try {
+			dataOutput.writeBytes(data + '\n');
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

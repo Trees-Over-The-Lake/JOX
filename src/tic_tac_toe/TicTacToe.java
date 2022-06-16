@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import entity.Grid;
 import input.MouseInput;
+import network.ConnectionType;
 import network.Network;
 
 public class TicTacToe {
@@ -27,8 +28,9 @@ public class TicTacToe {
 	
 	Network connection = new Network();
 	
+	boolean currentPlayer = false;
+	
 	public TicTacToe() {
-		
 		
 		labelFont = new Font("Century", Font.BOLD, 24);
 		
@@ -41,6 +43,11 @@ public class TicTacToe {
 		int gameGridY = (int)(MainGameLoop.get_height() * MainGameLoop.get_scale() * 0.1) + 30;
 		
 		this.gameGrid = new Grid(gameGridX,gameGridY,gameGridWidth);
+		
+		if (Network.currentConnection == ConnectionType.Client) {
+			currentPlayer = true;
+		}
+		
 	}
 	
 	public void tick() {
@@ -48,9 +55,9 @@ public class TicTacToe {
 		int mx = MouseInput.get_x();
 		int my = MouseInput.get_y();
 		
-		if (MouseInput.is_right_button_clicked() && this.gameGrid.isColidding(MouseInput.get_mouse_entity())) {
+		if (MouseInput.is_right_button_clicked() && this.gameGrid.isColidding(MouseInput.get_mouse_entity()) && currentPlayer) {
 			
-			boolean board_was_marked = this.gameGrid.mark_board(currPlayer,mx,my);
+			boolean board_was_marked = this.gameGrid.mark_board_with_positions(currPlayer,mx,my);
 			
 			if (!board_was_marked) 
 				return;
@@ -60,7 +67,24 @@ public class TicTacToe {
 			else 
 				currPlayer = PlayerType.Circle;
 			
+			currentPlayer = false;
+			
+			connection.sendData(gameGrid.last_marked_board_index);
+			gameGrid.last_marked_board_index = "-1|-1";
 		} 
+		
+		String response = connection.listenForServerRequest();
+		
+		if (response!= null) {
+			String[] split = response.split("|");
+			
+			int x = Integer.parseInt(split[0]);
+			int y = Integer.parseInt(split[1]);
+			
+			gameGrid.mark_board_with_index(currPlayer, x, y);
+			
+			currentPlayer = true;
+		}
 		
 		if (gameGrid.winner != PlayerType.None) {
 			System.out.println("We have a Winner! " + gameGrid.winner);

@@ -35,6 +35,8 @@ public class Grid extends Entity{
 													{ 2, 5, 8 }, 
 													{ 0, 4, 8 }, 
 													{ 2, 4, 6 } };
+													
+	public String last_marked_board_index = "-1|-1";
 	
 	public Grid(int x,int y, int width) {
 		super(x, y, width, width);
@@ -43,7 +45,7 @@ public class Grid extends Entity{
 		this.board = new Player[GRID_SIZE * GRID_SIZE];
 	}
 	
-	public boolean mark_board(PlayerType currPlayer, int x,int y) {
+	public boolean mark_board_with_positions(PlayerType currPlayer, int x,int y) {
 		
 		boolean board_marked = false;
 		
@@ -68,12 +70,36 @@ public class Grid extends Entity{
 		
 		marked_squares++;
 		
+		last_marked_board_index = x_index + "|" + y_index;
+		
 		winner = check_for_board_winner(PlayerType.Circle);
 		
 		if (winner == PlayerType.None)
 			winner = check_for_board_winner(PlayerType.Cross);
 		
 		return board_marked;
+	}
+	
+	public boolean mark_board_with_index(PlayerType currPlayer, int board_x_index, int board_y_index) {
+		
+		int player_x = calculate_board_position(this.x,board_x_index);
+		int player_y = calculate_board_position(this.y,board_y_index);
+		
+		if ( currPlayer == PlayerType.Circle )
+			this.board[board_x_index + (board_y_index * GRID_SIZE)] = new Circle(player_x, player_y, DEFAULT_SERVER_COLOR);
+		else
+			this.board[board_y_index + (board_y_index * GRID_SIZE)] = new Cross(player_x, player_y, DEFAULT_CLIENT_COLOR);
+		
+		marked_squares++;
+		
+		winner = check_for_board_winner(PlayerType.Circle);
+		
+		if (winner == PlayerType.None)
+			winner = check_for_board_winner(PlayerType.Cross);
+		
+		last_marked_board_index = board_x_index + "|" + board_y_index;
+		
+		return true;
 	}
 	
 	private int calculate_board_index(int offset, int axis) {
