@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.net.InetAddress;
 
 public class Network {
 
 	private static Socket socket;
-	private static DataOutputStream dataOutput;
-	private static DataInputStream dataInput;
+	public static DataOutputStream dataOutput;
+	public static DataInputStream dataInput;
 	private static ServerSocket serverSocket;
 	
 	public static boolean accepted = false;
@@ -54,14 +55,23 @@ public class Network {
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
 			accepted = true;
-	        BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	        response = entrada.readLine();
-	        System.out.println("FROM SERVER: " + entrada.readLine());
+	        System.out.println("FROM SERVER: " + response);
 			System.out.println("CLIENT HAS REQUESTED TO JOIN, AND WE HAVE ACCEPTED");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		return response;
+	}
+	
+	public String receiveData() {
+		String response = null;
+		try {
+			response = new String(dataInput.readAllBytes(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return response;
 	}
 	

@@ -74,24 +74,28 @@ public class TicTacToe {
 		} 
 		
 		if (Network.currentConnection == ConnectionType.Server) {
-			String response = connection.listenForServerRequest();
+			connection.listenForServerRequest();
 			
-			if (response != null) {
-				
-				if (!response.contains("|")) {
-					System.out.println(response);
-					return;
-				}
-				String[] split = response.split("|");
-				
-				int x = Integer.parseInt(split[0]);
-				int y = Integer.parseInt(split[1]);
-				
-				gameGrid.mark_board_with_index(currPlayer, x, y);
-				
-				currentPlayer = true;
+			String response = connection.receiveData();
+			
+			if (!response.contains("|")) {
+				return;
 			}
+			
+			System.out.println(response);
+			
+			String[] split = response.split("|");
+			
+			int x = Integer.parseInt(split[0]);
+			int y = Integer.parseInt(split[2]);
+			
+			gameGrid.mark_board_with_index(currPlayer, x, y);
+			
+			currentPlayer = true;
+			
 		}
+		
+		System.out.println("passei aq");
 		
 		if (gameGrid.winner != PlayerType.None) {
 			System.out.println("We have a Winner! " + gameGrid.winner);
@@ -104,7 +108,7 @@ public class TicTacToe {
 
 	public void render(Graphics g) {
 		
-		System.out.println("aqq");
+		System.out.println("RENDERIZA MEU FILHO");
 		g.drawImage(background, 0,0,null);
 		gameGrid.render(g);
 		render_current_player_text(g);
@@ -112,7 +116,6 @@ public class TicTacToe {
 	}
 	
 	public void render_current_player_text(Graphics g) {
-		
 		
 		String label = "Current Player: " + currPlayer;
 		
