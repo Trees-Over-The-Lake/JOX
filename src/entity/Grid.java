@@ -36,7 +36,7 @@ public class Grid extends Entity{
 													{ 0, 4, 8 }, 
 													{ 2, 4, 6 } };
 													
-	public String last_marked_board_index = "-1|-1";
+	public int last_marked_board_index = -1;
 	
 	public Grid(int x,int y, int width) {
 		super(x, y, width, width);
@@ -70,7 +70,7 @@ public class Grid extends Entity{
 		
 		marked_squares++;
 		
-		last_marked_board_index = x_index + "|" + y_index;
+		last_marked_board_index = x_index + (y_index * GRID_SIZE);
 		
 		winner = check_for_board_winner(PlayerType.Circle);
 		
@@ -80,7 +80,10 @@ public class Grid extends Entity{
 		return board_marked;
 	}
 	
-	public boolean mark_board_with_index(PlayerType currPlayer, int board_x_index, int board_y_index) {
+	public boolean mark_board_with_index(PlayerType currPlayer, int board_index) {
+		
+		int board_x_index = board_index % GRID_SIZE;
+		int board_y_index = (int) Math.floor(board_index / GRID_SIZE);
 		
 		int player_x = calculate_board_position(this.x,board_x_index);
 		int player_y = calculate_board_position(this.y,board_y_index);
@@ -97,7 +100,7 @@ public class Grid extends Entity{
 		if (winner == PlayerType.None)
 			winner = check_for_board_winner(PlayerType.Cross);
 		
-		last_marked_board_index = board_x_index + "|" + board_y_index;
+		last_marked_board_index = board_index;
 		
 		return true;
 	}

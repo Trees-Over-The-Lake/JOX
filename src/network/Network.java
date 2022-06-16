@@ -51,7 +51,9 @@ public class Network {
 		Socket socket = null;
 		String response = null;
 		try {
+			System.out.println("Esperando player");
 			socket = serverSocket.accept();
+			System.out.println("...");
 			dataOutput = new DataOutputStream(socket.getOutputStream());
 			dataInput = new DataInputStream(socket.getInputStream());
 			accepted = true;
@@ -63,10 +65,12 @@ public class Network {
 		return response;
 	}
 	
-	public String receiveData() {
-		String response = null;
+	public int receiveData() {
+		int response = -1;
 		try {
-			response = new String(dataInput.readAllBytes(), StandardCharsets.UTF_8);
+			System.out.println("recebendo dados...");
+			response = dataInput.readInt();
+			System.out.println("Dados recebidos");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,9 +78,9 @@ public class Network {
 		return response;
 	}
 	
-	public void sendData(String data) {
+	public void sendData(int data) {
 		try {
-			dataOutput.writeBytes(data + '\n');
+			dataOutput.writeInt(data);;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -28,7 +28,7 @@ public class TicTacToe {
 	
 	Network connection = new Network();
 	
-	boolean currentPlayer = false;
+	boolean yourTurn = false;
 	
 	public TicTacToe() {
 		
@@ -45,59 +45,25 @@ public class TicTacToe {
 		this.gameGrid = new Grid(gameGridX,gameGridY,gameGridWidth);
 		
 		if (Network.currentConnection == ConnectionType.Client) {
-			currentPlayer = true;
+			yourTurn = true;
 		}
 		
 	}
 	
 	public void tick() {
 		
-		int mx = MouseInput.get_x();
-		int my = MouseInput.get_y();
+		boolean player_played = false;
 		
-		if (MouseInput.is_right_button_clicked() && this.gameGrid.isColidding(MouseInput.get_mouse_entity()) && currentPlayer) {
-			
-			boolean board_was_marked = this.gameGrid.mark_board_with_positions(currPlayer,mx,my);
-			
-			if (!board_was_marked) 
-				return;
-			
-			if (currPlayer == PlayerType.Circle) 
-				currPlayer = PlayerType.Cross;
-			else 
-				currPlayer = PlayerType.Circle;
-			
-			currentPlayer = false;
-			
-			connection.sendData(gameGrid.last_marked_board_index);
-			gameGrid.last_marked_board_index = "-1|-1";
-		} 
-		
-		if (Network.currentConnection == ConnectionType.Server) {
-			
-			if(!Network.accepted)
-				connection.listenForServerRequest();
-			
-			String response = connection.receiveData();
-			
-			if (!response.contains("|")) {
-				return;
-			}
-			
-			System.out.println(response);
-			
-			String[] split = response.split("|");
-			
-			int x = Integer.parseInt(split[0]);
-			int y = Integer.parseInt(split[2]);
-			
-			gameGrid.mark_board_with_index(currPlayer, x, y);
-			
-			currentPlayer = true;
-			
+		if (yourTurn) {
+			player_played = playerTurn();
+		}
+		else {
+			player_played = enemyTurn();
 		}
 		
-		System.out.println("passei aq");
+		if (player_played) {
+			yourTurn = !yourTurn;
+		}
 		
 		if (gameGrid.winner != PlayerType.None) {
 			System.out.println("We have a Winner! " + gameGrid.winner);
@@ -107,10 +73,58 @@ public class TicTacToe {
 			System.out.println("Game ended with a tie");
 		}
 	}
+	
+	public boolean playerTurn() {
+		
+		System.out.println("Player turn");
+		
+		boolean player_played = false;
+		
+		int mx = MouseInput.get_x();
+		int my = MouseInput.get_y();
+		
+		if (MouseInput.is_right_button_clicked() && this.gameGrid.isColidding(MouseInput.get_mouse_entity())) {
+			
+			boolean board_was_marked = this.gameGrid.mark_board_with_positions(currPlayer,mx,my);
+			
+			player_played = board_was_marked;
+			
+			if (!player_played) 
+				return player_played;
+			
+			if (currPlayer == PlayerType.Circle) 
+				currPlayer = PlayerType.Cross;
+			else 
+				currPlayer = PlayerType.Circle;
+			
+			connection.sendData(gameGrid.last_marked_board_index);
+			gameGrid.last_marked_board_index = -1;
+		} 
+		
+		return player_played;
+	}
+	
+	public boolean enemyTurn() {
+		
+		System.out.println("Enemy turn");
+		
+		boolean enemy_played = false;
+		
+		int response = connection.receiveData();
+		
+		if (response == -1) {
+			return enemy_played;
+		}
+		
+		enemy_played = true;
+		
+		gameGrid.mark_board_with_index(currPlayer, response);
+			
+		return enemy_played;
+	}
 
 	public void render(Graphics g) {
 		
-		System.out.println("RENDERIZA MEU FILHO");
 		g.drawImage(background, 0,0,null);
 		gameGrid.render(g);
 		render_current_player_text(g);

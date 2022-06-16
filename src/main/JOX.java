@@ -1,8 +1,8 @@
 package main;
 
 import java.util.HashMap;
-import java.util.Map;
 
+import login.LoadingScreen;
 import login.LoginScreen;
 import network.Network;
 import tic_tac_toe.MainGameLoop;
@@ -26,8 +26,18 @@ public final class JOX  {
 		Network server = new Network();
 		System.out.println(content.get(LoginScreen.PORT_KEY));
 		server.initializeServer(Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+
+		
+		LoadingScreen ls = new LoadingScreen("Please wait until a user connect...");
+	    
+		if(!Network.accepted)
+			server.listenForServerRequest();
+		
+		ls.close();
 		
 		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
+		
+		
 	}
 	
 	public void login_server(HashMap<String, String> content) {
