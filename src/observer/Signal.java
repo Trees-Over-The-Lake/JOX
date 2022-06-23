@@ -69,7 +69,8 @@ public class Signal {
     				Method methodToBeCalled = classInstance.getClass().getMethod(functionName, paramTypes);
     				methodToBeCalled.invoke(classInstance, parameters);
     			} catch (NoSuchMethodException e) { 
-    				System.err.println("[ERROR] : The method \"" + functionName + "\" does not exist in class " + classInstance.getClass().getName());
+    				System.err.println("[ERROR] : The method \"" + functionName + "\" does not exist in class " + classInstance.getClass().getName() + "\n"+
+    						"Please check the function access and arguments");
     		    } 
         		catch (SecurityException e) {
         			e.printStackTrace();

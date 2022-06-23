@@ -36,7 +36,6 @@ public final class JOX  {
 	}
 	
 	public void login_server(HashMap<String, String> content) {
-		System.out.println("login_server");
 		login.close();
 		GameClient client = new GameClient("name", content.get(LoginScreen.IP_KEY), Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
 		client.connect();

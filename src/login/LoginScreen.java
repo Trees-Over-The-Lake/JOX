@@ -110,8 +110,8 @@ public class LoginScreen extends JFrame{
 				 * Start game as client side
 				 */
 				HashMap<String,String> data=new HashMap<String,String>();
-				data.put(IP_KEY, clientIpTextField.getText());
-				data.put(PORT_KEY, clientPortTextField.getText());
+				data.put(IP_KEY, clientIpTextField.getText().trim());
+				data.put(PORT_KEY, clientPortTextField.getText().trim());
 				
 				login_server.emit_signal(data);
 				
@@ -151,7 +151,7 @@ public class LoginScreen extends JFrame{
 				 * Start game as server side
 				 */
 				HashMap<String,String> data=new HashMap<String,String>();
-				data.put(PORT_KEY, serverPortTextField.getText());
+				data.put(PORT_KEY, serverPortTextField.getText().trim());
 				
 				create_server.emit_signal(data);
 			}

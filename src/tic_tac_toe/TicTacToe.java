@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import entity.Grid;
 import input.MouseInput;
 import network.GameClient;
-import network.ConnectionType;
 import network.GameServer;
 
 public class TicTacToe {
@@ -20,7 +19,8 @@ public class TicTacToe {
 	BufferedImage background;
 	Grid gameGrid;
 	
-	PlayerType currPlayer = PlayerType.Circle;
+	PlayerType yourPlayer  = PlayerType.Circle;
+	PlayerType enemyPlayer = PlayerType.Cross;
 	
 	Font labelFont;
 	FontMetrics metrics;
@@ -35,6 +35,8 @@ public class TicTacToe {
 		
 		try {
 			client = new GameClient();
+			client.startServerCommunication();
+			client.server_sended_message.connect(this, "process_server_input");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -55,18 +57,8 @@ public class TicTacToe {
 	
 	public void tick() {
 		
-		boolean player_played = false;
-		
-		if (yourTurn) {
-			player_played = playerTurn();
-		}
-		else {
-			player_played = enemyTurn();
-		}
-		
-		if (player_played) {
-			yourTurn = !yourTurn;
-		}
+		if (yourTurn) 
+			playerTurn();
 		
 		if (gameGrid.winner != PlayerType.None) {
 			System.out.println("We have a Winner! " + gameGrid.winner);
@@ -79,8 +71,6 @@ public class TicTacToe {
 	
 	public boolean playerTurn() {
 		
-		System.out.println("Player turn");
-		
 		boolean player_played = false;
 		
 		int mx = MouseInput.get_x();
@@ -88,42 +78,57 @@ public class TicTacToe {
 		
 		if (MouseInput.is_right_button_clicked() && this.gameGrid.isColidding(MouseInput.get_mouse_entity())) {
 			
-			boolean board_was_marked = this.gameGrid.mark_board_with_positions(currPlayer,mx,my);
+			boolean board_was_marked = this.gameGrid.mark_board_with_positions(yourPlayer,mx,my);
 			
 			player_played = board_was_marked;
 			
 			if (!player_played) 
 				return player_played;
+
+			String board_index = "" + gameGrid.last_marked_board_index;
 			
-			if (currPlayer == PlayerType.Circle) 
-				currPlayer = PlayerType.Cross;
-			else 
-				currPlayer = PlayerType.Circle;
-			
-			client.sendData(String.valueOf(gameGrid.last_marked_board_index));
+			client.sendData(board_index);
 			gameGrid.last_marked_board_index = -1;
+			
+			yourTurn = false;
 		} 
 		
 		return player_played;
 	}
 	
-	public boolean enemyTurn() {
+	public void enemyTurn(int board_index) {
 		
-		System.out.println("Enemy turn");
-		
-		boolean enemy_played = false;
-		
-		int response = Integer.parseInt(client.listenToServer());
+		int response = board_index;
 		
 		if (response == -1) {
-			return enemy_played;
+			return;
 		}
-		
-		enemy_played = true;
-		
-		gameGrid.mark_board_with_index(currPlayer, response);
+
+		gameGrid.mark_board_with_index(enemyPlayer, response);
 			
-		return enemy_played;
+		yourTurn = true;
+	}
+	
+	public void process_server_input(String msg) {
+		
+		System.out.println("Mensagem recebida do servidor: " + msg);
+		
+		if(msg.contains(GameServer.START_GAME)) {
+			if (msg.contains(GameServer.FIRST_TURN)) {
+				yourTurn = true;
+			}
+			else {
+				yourPlayer  = PlayerType.Cross;
+				enemyPlayer = PlayerType.Circle;
+			}
+			
+		} else if(msg.contains(GameServer.SERVER_CLOSED)) {
+			System.err.println("[ERROR!]: Server closed abruptly");
+			System.exit(1);
+		}
+		else {
+			enemyTurn(Integer.parseInt(msg));
+		}
 	}
 
 	public void render(Graphics g) {
@@ -136,7 +141,7 @@ public class TicTacToe {
 	
 	public void render_current_player_text(Graphics g) {
 		
-		String label = "Current Player: " + currPlayer;
+		String label = "Current Player: " + (yourTurn ? yourPlayer : enemyPlayer) ;
 		
 		g.setFont(labelFont);
 		metrics = g.getFontMetrics(labelFont);

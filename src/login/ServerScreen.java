@@ -48,6 +48,7 @@ public class ServerScreen extends JFrame{
 			public void actionPerformed(ActionEvent a) {
 				
 				System.exit(0);
+				server.close();
 			}
 		});
 		
