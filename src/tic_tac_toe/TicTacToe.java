@@ -11,8 +11,9 @@ import javax.imageio.ImageIO;
 
 import entity.Grid;
 import input.MouseInput;
+import network.GameClient;
 import network.ConnectionType;
-import network.Network;
+import network.GameServer;
 
 public class TicTacToe {
 
@@ -26,11 +27,17 @@ public class TicTacToe {
 	int labelX;
 	int labelY;
 	
-	Network connection = new Network();
-	
 	boolean yourTurn = false;
 	
+	GameClient client;
+	
 	public TicTacToe() {
+		
+		try {
+			client = new GameClient();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 		labelFont = new Font("Century", Font.BOLD, 24);
 		
@@ -43,10 +50,6 @@ public class TicTacToe {
 		int gameGridY = (int)(MainGameLoop.get_height() * MainGameLoop.get_scale() * 0.1) + 30;
 		
 		this.gameGrid = new Grid(gameGridX,gameGridY,gameGridWidth);
-		
-		if (Network.currentConnection == ConnectionType.Client) {
-			yourTurn = true;
-		}
 		
 	}
 	
@@ -97,7 +100,7 @@ public class TicTacToe {
 			else 
 				currPlayer = PlayerType.Circle;
 			
-			connection.sendData(gameGrid.last_marked_board_index);
+			client.sendData(String.valueOf(gameGrid.last_marked_board_index));
 			gameGrid.last_marked_board_index = -1;
 		} 
 		
@@ -110,7 +113,7 @@ public class TicTacToe {
 		
 		boolean enemy_played = false;
 		
-		int response = connection.receiveData();
+		int response = Integer.parseInt(client.listenToServer());
 		
 		if (response == -1) {
 			return enemy_played;

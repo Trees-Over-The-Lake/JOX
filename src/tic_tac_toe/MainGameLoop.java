@@ -18,7 +18,7 @@ import input.MouseInput;
 public class MainGameLoop extends Canvas implements Runnable,MouseListener,MouseMotionListener {
 	
 		// Serial number do canvas
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 2L;
 
 		private JFrame frame; 
 		

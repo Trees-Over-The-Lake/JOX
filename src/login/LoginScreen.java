@@ -19,8 +19,8 @@ public class LoginScreen extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
 	// Map keys
-	public static final String IP_KEY        = "ip";
-	public static final String PORT_KEY      = "port";
+	public static final String IP_KEY   = "ip";
+	public static final String PORT_KEY = "port";
 	
 	// Login signals
 	public Signal create_server;

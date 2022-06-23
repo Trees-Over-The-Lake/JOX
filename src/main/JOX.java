@@ -2,15 +2,17 @@ package main;
 
 import java.util.HashMap;
 
-import login.LoadingScreen;
 import login.LoginScreen;
-import network.Network;
+import login.ServerScreen;
+import network.GameClient;
 import tic_tac_toe.MainGameLoop;
+
 public final class JOX  {
 	
 	LoginScreen login;
 	
 	public JOX() {
+		
 		login = new LoginScreen("JOX");
 		login.create_server.connect(this,"create_server");
 		login.login_server.connect(this,"login_server");
@@ -21,32 +23,24 @@ public final class JOX  {
 	}
 	
 	public void create_server(HashMap<String, String> content) {
-		System.out.println("create_server");
 		login.close();
-		Network server = new Network();
-		System.out.println(content.get(LoginScreen.PORT_KEY));
-		server.initializeServer(Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+		
+		int port = Integer.parseInt(content.get(LoginScreen.PORT_KEY));
 
-		
-		LoadingScreen ls = new LoadingScreen("Please wait until a user connect...");
+	    ServerScreen ss = new ServerScreen("Server",port);
 	    
-		if(!Network.accepted)
-			server.listenForServerRequest();
-		
-		ls.close();
-		
-		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
-		
+	    ss.startServer();
+		//LoadingScreen ls = new LoadingScreen("Please wait until a user connect...");
+		//ls.close();		
 		
 	}
 	
 	public void login_server(HashMap<String, String> content) {
 		System.out.println("login_server");
 		login.close();
-		Network client = new Network();
-		client.connect(content.get(LoginScreen.IP_KEY), Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+		GameClient client = new GameClient("name", content.get(LoginScreen.IP_KEY), Integer.parseInt(content.get(LoginScreen.PORT_KEY)));
+		client.connect();
 		
-		MainGameLoop t = new MainGameLoop("Tic Tac Toe");
-		// TODO: Logging into server logic
+		new MainGameLoop("Tic Tac Toe");
 	}
 }
