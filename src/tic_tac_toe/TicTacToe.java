@@ -43,7 +43,7 @@ public class TicTacToe {
 		
 		labelFont = new Font("Century", Font.BOLD, 24);
 		
-		try { this.background = ImageIO.read(new File("res/paper_texture.jpg")); } 
+		try { this.background = ImageIO.read(getClass().getResource("/paper_texture.jpg")); } 
 		catch (IOException e) { e.printStackTrace(); }
 		
 		int gameGridWidth = MainGameLoop.get_width() * MainGameLoop.get_scale() - 100;
@@ -133,7 +133,7 @@ public class TicTacToe {
 
 	public void render(Graphics g) {
 		
-		g.drawImage(background, 0,0,null);
+		//g.drawImage(background, 0,0,null);
 		gameGrid.render(g);
 		render_current_player_text(g);
 		
