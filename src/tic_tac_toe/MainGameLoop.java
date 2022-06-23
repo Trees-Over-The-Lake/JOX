@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import input.MouseInput;
 
@@ -20,14 +21,14 @@ public class MainGameLoop extends Canvas implements Runnable,MouseListener,Mouse
 		// Serial number do canvas
 		private static final long serialVersionUID = 2L;
 
-		private JFrame frame; 
+		public static JFrame frame; 
 		
 		// Variavel para manter o programa ligado
 		private boolean isRunning; 				        
 		
 		// Dimensoes da tela do programa
-		private final static int WIDTH  = 600; 			// Comprimento da janela a ser criada
-		private final static int HEIGHT = 600; 			// Altura da janela a ser criada
+		public final static int WIDTH  = 600; 			// Comprimento da janela a ser criada
+		public final static int HEIGHT = 600; 			// Altura da janela a ser criada
 		public final static int  SCALE  = 1; 			// x vezes que a janela sera aumentada
 		
 		// Criando thread
@@ -72,7 +73,7 @@ public class MainGameLoop extends Canvas implements Runnable,MouseListener,Mouse
 		private void initFrame(String frameName) {
 
 			// Configurando janela
-			this.frame = new JFrame(frameName); 
+			frame = new JFrame(frameName); 
 			frame.setResizable(false); 
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 			frame.add(this);
@@ -121,6 +122,7 @@ public class MainGameLoop extends Canvas implements Runnable,MouseListener,Mouse
 				//Ao passar um segundo ou mais
 				if ( delta >= 1) {
 	
+					
 					tick();
 					render();
 					delta--;
@@ -147,6 +149,7 @@ public class MainGameLoop extends Canvas implements Runnable,MouseListener,Mouse
 		public void tick() {
 			
 			game.tick();
+
 		}
 		
 
@@ -166,6 +169,7 @@ public class MainGameLoop extends Canvas implements Runnable,MouseListener,Mouse
 			g = bs.getDrawGraphics();
 			
 			game.render(g);
+			
 			//Mostrar tudo que foi pedido para ser renderizado
 			
 			bs.show();

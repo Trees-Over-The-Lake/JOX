@@ -27,7 +27,6 @@ public class GameServer extends Thread{
 	
 	public GameServer(int port) {
 		
-		
 		this.server_logger = new Signal(String.class);
 		try {
 			server = new ServerSocket(port);
@@ -61,6 +60,7 @@ public class GameServer extends Thread{
 				server_logger.emit_signal("Um jogador foi desconectado...\n");
 				clients.remove(bwSaida);
 				numberOfPlayers--;
+				game_started = false;
 				return;
 			}
 	
@@ -131,7 +131,8 @@ public class GameServer extends Thread{
 				server.start();
 			
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println("[ERROR]: Tem um servidor aberto nesta porta");
+				System.exit(1);
 			}
 		}
 		

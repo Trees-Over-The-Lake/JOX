@@ -1,13 +1,14 @@
 package tic_tac_toe; 
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import entity.Grid;
 import input.MouseInput;
@@ -28,6 +29,7 @@ public class TicTacToe {
 	int labelY;
 	
 	boolean yourTurn = false;
+	boolean gameBegin = false;
 	
 	GameClient client;
 	
@@ -57,16 +59,28 @@ public class TicTacToe {
 	
 	public void tick() {
 		
-		if (yourTurn) 
-			playerTurn();
-		
 		if (gameGrid.winner != PlayerType.None) {
-			System.out.println("We have a Winner! " + gameGrid.winner);
+			
+			 JOptionPane.showMessageDialog(MainGameLoop.frame,
+                   "We have a winner: " + gameGrid.winner  , 
+                   gameGrid.winner == yourPlayer ? "You Win" : "You Lose", 
+                   JOptionPane.INFORMATION_MESSAGE);
+			 
+			 System.exit(0);
 		}
 		
 		if (gameGrid.game_ended_with_tie()) {
-			System.out.println("Game ended with a tie");
-		}
+			 JOptionPane.showMessageDialog(MainGameLoop.frame,
+                   "Game ended with a tie", 
+                   "Game finished", 
+                   JOptionPane.INFORMATION_MESSAGE);
+			 
+			 System.exit(0);
+		}	
+	
+		if (yourTurn) 
+			playerTurn();
+
 	}
 	
 	public boolean playerTurn() {
@@ -114,6 +128,9 @@ public class TicTacToe {
 		System.out.println("Mensagem recebida do servidor: " + msg);
 		
 		if(msg.contains(GameServer.START_GAME)) {
+			
+			gameBegin = true;
+			
 			if (msg.contains(GameServer.FIRST_TURN)) {
 				yourTurn = true;
 			}
@@ -132,16 +149,21 @@ public class TicTacToe {
 	}
 
 	public void render(Graphics g) {
-		
-		//g.drawImage(background, 0,0,null);
-		gameGrid.render(g);
+	
+		g.drawImage(background, 0,0,null);
 		render_current_player_text(g);
+		gameGrid.render(g);
 		
 	}
 	
 	public void render_current_player_text(Graphics g) {
 		
-		String label = "Current Player: " + (yourTurn ? yourPlayer : enemyPlayer) ;
+		String label = new String();
+		
+		if (!gameBegin)
+			label = "Waiting for second player...";
+		else 
+			label = "Current Player: " + (yourTurn ? "You" : "Opponent") ;
 		
 		g.setFont(labelFont);
 		metrics = g.getFontMetrics(labelFont);

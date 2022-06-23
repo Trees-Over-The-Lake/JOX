@@ -158,9 +158,13 @@ public class Grid extends Entity{
 		g2.drawLine(x+square_size,y,x + square_size,y + height);
 		g2.drawLine(x+ square_size*2 + stroke*2 ,y,x + square_size*2 + stroke*2,y +height);
 		
-		for (Entity player : this.board) {
-			if ( player != null )
-				player.render(g);
+		for (int i = 0 ; i < board.length; i++) {
+			
+			Entity currPlayer = board[i];
+			if ( currPlayer != null ) {
+				System.out.println("render: " + i);
+				currPlayer.render(g);
+			}
 		}
 	}
 
