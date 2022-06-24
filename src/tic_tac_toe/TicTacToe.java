@@ -96,6 +96,8 @@ public class TicTacToe {
 			
 			player_played = board_was_marked;
 			
+			System.out.println("Player " +  player_played);
+			
 			if (!player_played) 
 				return player_played;
 

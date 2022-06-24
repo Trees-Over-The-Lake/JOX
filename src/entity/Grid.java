@@ -55,8 +55,10 @@ public class Grid extends Entity{
 		if (x_index == -1 || y_index == -1)
 			return board_marked;
 		
-		if (this.board[x_index + (y_index * GRID_SIZE)] != null)
+		if (this.board[x_index + (y_index * GRID_SIZE)] != null) {
+			System.out.println("Posicao vazia");
 			return board_marked;
+		}
 		
 		board_marked = true;
 		
@@ -77,13 +79,26 @@ public class Grid extends Entity{
 		if (winner == PlayerType.None)
 			winner = check_for_board_winner(PlayerType.Cross);
 		
+		for(int i = 0 ; i < GRID_SIZE; i++) {
+			for (int j = 0 ; j < GRID_SIZE; j++) {
+				if (this.board[j + (i * GRID_SIZE)] == null) {
+					System.out.print(" ");
+				} else if (this.board[i + (j * GRID_SIZE)] instanceof Circle) {
+					System.out.print("O");
+				} else {
+					System.out.print("X");
+				}
+			}
+			System.out.println("");
+		}
+		
 		return board_marked;
 	}
 	
 	public boolean mark_board_with_index(PlayerType currPlayer, int board_index) {
 		
 		int board_x_index = board_index % GRID_SIZE;
-		int board_y_index = (int) Math.floor(board_index / GRID_SIZE);
+		int board_y_index = board_index / GRID_SIZE;
 		
 		int player_x = calculate_board_position(this.x,board_x_index);
 		int player_y = calculate_board_position(this.y,board_y_index);
@@ -91,7 +106,7 @@ public class Grid extends Entity{
 		if ( currPlayer == PlayerType.Circle )
 			this.board[board_x_index + (board_y_index * GRID_SIZE)] = new Circle(player_x, player_y, DEFAULT_SERVER_COLOR);
 		else
-			this.board[board_y_index + (board_y_index * GRID_SIZE)] = new Cross(player_x, player_y, DEFAULT_CLIENT_COLOR);
+			this.board[board_x_index + (board_y_index * GRID_SIZE)] = new Cross(player_x, player_y, DEFAULT_CLIENT_COLOR);
 		
 		marked_squares++;
 		
@@ -101,6 +116,19 @@ public class Grid extends Entity{
 			winner = check_for_board_winner(PlayerType.Cross);
 		
 		last_marked_board_index = board_index;
+		
+		for(int i = 0 ; i < GRID_SIZE; i++) {
+			for (int j = 0 ; j < GRID_SIZE; j++) {
+				if (this.board[j + (i * GRID_SIZE)] == null) {
+					System.out.print(" ");
+				} else if (this.board[i + (j * GRID_SIZE)] instanceof Circle) {
+					System.out.print("O");
+				} else {
+					System.out.print("X");
+				}
+			}
+			System.out.println("");
+		}
 		
 		return true;
 	}
@@ -162,7 +190,6 @@ public class Grid extends Entity{
 			
 			Entity currPlayer = board[i];
 			if ( currPlayer != null ) {
-				System.out.println("render: " + i);
 				currPlayer.render(g);
 			}
 		}
