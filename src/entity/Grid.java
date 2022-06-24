@@ -79,18 +79,7 @@ public class Grid extends Entity{
 		if (winner == PlayerType.None)
 			winner = check_for_board_winner(PlayerType.Cross);
 		
-		for(int i = 0 ; i < GRID_SIZE; i++) {
-			for (int j = 0 ; j < GRID_SIZE; j++) {
-				if (this.board[j + (i * GRID_SIZE)] == null) {
-					System.out.print(" ");
-				} else if (this.board[i + (j * GRID_SIZE)] instanceof Circle) {
-					System.out.print("O");
-				} else {
-					System.out.print("X");
-				}
-			}
-			System.out.println("");
-		}
+		printBoard();
 		
 		return board_marked;
 	}
@@ -116,19 +105,6 @@ public class Grid extends Entity{
 			winner = check_for_board_winner(PlayerType.Cross);
 		
 		last_marked_board_index = board_index;
-		
-		for(int i = 0 ; i < GRID_SIZE; i++) {
-			for (int j = 0 ; j < GRID_SIZE; j++) {
-				if (this.board[j + (i * GRID_SIZE)] == null) {
-					System.out.print(" ");
-				} else if (this.board[i + (j * GRID_SIZE)] instanceof Circle) {
-					System.out.print("O");
-				} else {
-					System.out.print("X");
-				}
-			}
-			System.out.println("");
-		}
 		
 		return true;
 	}
@@ -172,6 +148,22 @@ public class Grid extends Entity{
 	
 	public boolean game_ended_with_tie() {
 		return winner == PlayerType.None && marked_squares == GRID_SIZE * GRID_SIZE;
+	}
+	
+	private void printBoard() {
+		
+		for(int i = 0 ; i < GRID_SIZE; i++) {
+			for (int j = 0 ; j < GRID_SIZE; j++) {
+				if (this.board[j + (i * GRID_SIZE)] == null) {
+					System.out.print(" ");
+				} else if (this.board[i + (j * GRID_SIZE)] instanceof Circle) {
+					System.out.print("O");
+				} else {
+					System.out.print("X");
+				}
+			}
+			System.out.println("");
+		}
 	}
 
 	public void render(Graphics g) {
