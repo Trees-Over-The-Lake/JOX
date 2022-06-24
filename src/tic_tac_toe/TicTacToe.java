@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import entity.Grid;
+import helpers.Timer;
 import input.MouseInput;
 import network.GameClient;
 import network.GameServer;
@@ -30,8 +31,13 @@ public class TicTacToe {
 	
 	boolean yourTurn = false;
 	boolean gameBegin = false;
+	boolean gameEnded = false;
+	Timer gameEndedTimer;
 	
 	GameClient client;
+	
+	int enemyResponse = -1;
+	boolean enemyResponded = false;
 	
 	public TicTacToe() {
 		
@@ -61,26 +67,60 @@ public class TicTacToe {
 		
 		if (gameGrid.winner != PlayerType.None) {
 			
-			 JOptionPane.showMessageDialog(MainGameLoop.frame,
-                   "We have a winner: " + gameGrid.winner  , 
-                   gameGrid.winner == yourPlayer ? "You Win" : "You Lose", 
-                   JOptionPane.INFORMATION_MESSAGE);
-			 
-			 System.exit(0);
+			gameEnded = true;
+			if (gameEndedTimer == null) {
+				gameEndedTimer = new Timer(60);
+			} else {
+				
+				if(gameEndedTimer.is_stopped()) {
+					
+
+					 JOptionPane.showMessageDialog(MainGameLoop.frame,
+		                   "We have a winner: " + gameGrid.winner  , 
+		                   gameGrid.winner == yourPlayer ? "You Win" : "You Lose", 
+		                   JOptionPane.INFORMATION_MESSAGE);
+					 
+					 System.exit(0);
+				} else {
+					gameEndedTimer.tick();
+				}
+			}
+			
 		}
 		
 		if (gameGrid.game_ended_with_tie()) {
-			 JOptionPane.showMessageDialog(MainGameLoop.frame,
-                   "Game ended with a tie", 
-                   "Game finished", 
-                   JOptionPane.INFORMATION_MESSAGE);
+			
+			gameEnded = true;
+			if (gameEndedTimer == null) {
+				gameEndedTimer = new Timer(30);
+			} else {
+				
+				if(gameEndedTimer.is_stopped()) {
+					
+
+					JOptionPane.showMessageDialog(MainGameLoop.frame,
+			                   "Game ended with a tie", 
+			                   "Game finished", 
+			                   JOptionPane.INFORMATION_MESSAGE);
+						 
+						 System.exit(0);
+				} else {
+					gameEndedTimer.tick();
+				}
+			}
 			 
-			 System.exit(0);
 		}	
 	
-		if (yourTurn) 
-			playerTurn();
-
+		if (!gameEnded) {
+			if (yourTurn) 
+				playerTurn();
+			
+			else if (enemyResponded) {
+				enemyTurn(enemyResponse);
+				enemyResponded = false;
+				enemyResponse = -1;
+			}
+		}
 	}
 	
 	public boolean playerTurn() {
@@ -146,7 +186,8 @@ public class TicTacToe {
 			System.exit(1);
 		}
 		else {
-			enemyTurn(Integer.parseInt(msg));
+			enemyResponded = true;
+			enemyResponse = Integer.parseInt(msg);
 		}
 	}
 
